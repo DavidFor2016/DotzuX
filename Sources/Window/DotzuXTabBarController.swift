@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 class DotzuXTabBarController: UITabBarController {
 
@@ -66,32 +69,30 @@ class DotzuXTabBarController: UITabBarController {
             let nav = UINavigationController.init(rootViewController: vc)
             nav.navigationBar.barTintColor = "#1f2124".hexColor
             
-            //****** 以下代码从NavigationController.swift复制 ******
+            //****** 以下代码从DotzuXNavigationController.swift复制 ******
             nav.navigationBar.isTranslucent = false
             
             nav.navigationBar.tintColor = Color.mainGreen
             nav.navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 20),
                                                      NSAttributedStringKey.foregroundColor: Color.mainGreen]
             
-            let selector = #selector(DotzuXNavigationController.exit)
-            
-            
             let image = UIImage(named: "DotzuX_close", in: Bundle(for: DotzuXNavigationController.self), compatibleWith: nil)
-            let leftItem = UIBarButtonItem(image: image,
-                                             style: .done, target: self, action: selector)
-            leftItem.tintColor = Color.mainGreen
-            nav.topViewController?.navigationItem.leftBarButtonItem = leftItem
-            //****** 以上代码从NavigationController.swift复制 ******
+            let item = UIBarButtonItem(image: image, style: .done, target: nil, action: nil)
+            item.tintColor = Color.mainGreen
+            nav.topViewController?.navigationItem.leftBarButtonItem = item
+            
+            item.rx
+                .tap
+                .subscribe(onNext: { [weak self] (_) in
+                    self?.dismiss(animated: true, completion: nil)
+                })
+                .disposed(by: rx.disposeBag)
+            //****** 以上代码从DotzuXNavigationController.swift复制 ******
             
             temp.append(nav)
         }
         
         self.viewControllers = temp
-    }
-    
-    //MARK: - target action
-    @objc func exit() {
-        dismiss(animated: true, completion: nil)
     }
     
     //MARK: - show more than 5 tabs by liman

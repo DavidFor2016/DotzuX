@@ -163,9 +163,7 @@ static NSURLSessionConfiguration* replaced_defaultSessionConfiguration(id self, 
     
     if ([[HttpDatasource shared] addHttpRequset:model])
     {
-        dispatch_main_async_safe(^{
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadHttp_DotzuX" object:nil userInfo:@{@"statusCode":model.statusCode}];
-        })
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadHttp_DotzuX" object:nil userInfo:@{@"statusCode":model.statusCode}];
     }
 }
 

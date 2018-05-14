@@ -157,7 +157,7 @@ class NetworkDetailViewController: UITableViewController {
     
     //MARK: - target action
     @IBAction func close(_ sender: UIBarButtonItem) {
-        (self.navigationController as! DotzuXNavigationController).exit()
+        navigationController?.dismiss(animated: true, completion: nil)
     }
 }
 

@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 class LogViewController: UIViewController {
     
@@ -182,7 +185,24 @@ class LogViewController: UIViewController {
         //add FPSLabel behind status bar
         addStatusBarBackgroundView(viewController: self)
         
-        NotificationCenter.default.addObserver(self, selector: #selector(refreshLogs_notification), name: NSNotification.Name("refreshLogs_DotzuX"), object: nil)
+        
+        //通知
+        NotificationCenter.default.rx
+            .notification(NSNotification.Name("refreshLogs_DotzuX"))
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (_) in
+                
+                if let reachEndDefault = self?.reachEndDefault, let reachEndColor = self?.reachEndColor {
+                    if self?.selectedSegmentIndex == 0 {
+                        self?.reloadLogs(needScrollToEnd: reachEndDefault, needReloadData: true)
+                    }else{
+                        self?.reloadLogs(needScrollToEnd: reachEndColor, needReloadData: true)
+                    }
+                }
+            })
+            .disposed(by: rx.disposeBag)
+        
+        
         
         defaultTableView.tableFooterView = UIView()
         defaultTableView.delegate = self
@@ -225,15 +245,6 @@ class LogViewController: UIViewController {
         defaultSearchBar.resignFirstResponder()
         colorSearchBar.resignFirstResponder()
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-    
-    
-    
-    
-    
     
 
     
@@ -287,17 +298,6 @@ class LogViewController: UIViewController {
         }
         
         reloadLogs(needScrollToEnd: false, needReloadData: false)
-    }
-    
-    
-    //MARK: - notification
-    @objc func refreshLogs_notification() {
-        
-        if selectedSegmentIndex == 0 {
-            reloadLogs(needScrollToEnd: reachEndDefault, needReloadData: true)
-        }else{
-            reloadLogs(needScrollToEnd: reachEndColor, needReloadData: true)
-        }
     }
 }
 

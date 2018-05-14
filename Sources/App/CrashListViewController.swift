@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 class CrashListViewController: UITableViewController {
 
@@ -16,24 +19,26 @@ class CrashListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.trash, target: self, action:#selector(CrashListViewController.deleteCrashes))
-
         tableView.delegate = self
         tableView.dataSource = self
         tableView.tableFooterView = UIView()
         
         models = CrashStoreManager.shared.crashArray
         tableView.reloadData()
-    }
-    
-    //MARK: - target action
-    @objc func deleteCrashes() {
-        models = []
-        CrashStoreManager.shared.resetCrashs()
         
-        dispatch_main_async_safe { [weak self] in
-            self?.tableView.reloadData()
-        }
+        
+        //清空
+        let item = UIBarButtonItem(barButtonSystemItem: .trash, target: nil, action: nil)
+        navigationItem.rightBarButtonItem = item
+        item.rx
+            .tap
+            .subscribe(onNext: { [weak self] (_) in
+                
+                self?.models = []
+                self?.tableView.reloadData()
+                CrashStoreManager.shared.resetCrashs()
+            })
+            .disposed(by: rx.disposeBag)
     }
 }
 

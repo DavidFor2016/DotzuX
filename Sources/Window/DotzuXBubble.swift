@@ -8,6 +8,9 @@
 
 import UIKit
 import UIKit.UIGestureRecognizerSubclass
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 protocol DotzuXBubbleDelegate: class {
     func didTapDotzuXBubble()
@@ -24,8 +27,6 @@ class DotzuXBubble: UIView {
     
     public let width: CGFloat = _width
     public let height: CGFloat = _height
-    private var timer: Timer? 
-    
     
     private lazy var _label: UILabel? = {
         let xxx: CGFloat = 16/2
@@ -145,20 +146,41 @@ class DotzuXBubble: UIView {
             self.addSubview(_sublabel)
         }
         
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(DotzuXBubble.tap))
-        self.addGestureRecognizer(tapGesture)
+        
+        //点击
+        let tap = UITapGestureRecognizer()
+        self.addGestureRecognizer(tap)
+        tap.rx
+            .event
+            .subscribe(onNext: { [weak self] (_) in
+                self?.delegate?.didTapDotzuXBubble()
+            })
+            .disposed(by: rx.disposeBag)
+        
         
         #if DEBUG//***************** Private API *****************
         if #available(iOS 11.0, *) {
-            let longPress = UILongPressGestureRecognizer(target: self, action: #selector(DotzuXBubble.longPress(sender:)))
-            self.addGestureRecognizer(longPress)
-            tapGesture.require(toFail: longPress)
+            let long = UILongPressGestureRecognizer(target: nil, action: nil)
+            self.addGestureRecognizer(long)
+            tap.require(toFail: long)
+            long.rx
+                .event
+                .subscribe(onNext: { [weak self] (sender) in
+                    self?.longPress(sender)
+                })
+                .disposed(by: rx.disposeBag)
         } else {
             // Fallback on earlier versions
             if #available(iOS 10.0, *) {
-                let longPress = UILongPressGestureRecognizer(target: self, action: #selector(DotzuXBubble.longPress2(sender:)))
-                self.addGestureRecognizer(longPress)
-                tapGesture.require(toFail: longPress)
+                let long2 = UILongPressGestureRecognizer(target: nil, action: nil)
+                self.addGestureRecognizer(long2)
+                tap.require(toFail: long2)
+                long2.rx
+                    .event
+                    .subscribe(onNext: { [weak self] (sender) in
+                        self?.longPress2(sender)
+                    })
+                    .disposed(by: rx.disposeBag)
             } else {
                 // Fallback on earlier versions
             }
@@ -186,95 +208,64 @@ class DotzuXBubble: UIView {
         initLayer()
         
         //添加手势
-        let selector = #selector(DotzuXBubble.panDidFire(panner:))
-        let panGesture = UIPanGestureRecognizer(target: self, action: selector)
-        self.addGestureRecognizer(panGesture)
+        let pan = UIPanGestureRecognizer(target: nil, action: nil)
+        self.addGestureRecognizer(pan)
+        pan.rx
+            .event
+            .subscribe(onNext: { [weak self] (sender) in
+                self?.panDidFire(sender)
+            })
+            .disposed(by: rx.disposeBag)
         
-        //网络通知
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadHttp_notification(_ :)), name: NSNotification.Name("reloadHttp_DotzuX"), object: nil)
+        
+        //通知
+        NotificationCenter.default.rx
+            .notification(NSNotification.Name("reloadHttp_DotzuX"))
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (notification) in
+                
+                guard let userInfo = notification.userInfo else {return}
+                let statusCode = userInfo["statusCode"] as? String
+                
+                //https://httpstatuses.com/
+                let successStatusCodes = ["200","201","202","203","204","205","206","207","208","226"]
+                
+                if successStatusCodes.contains(statusCode ?? "") {
+                    self?.initLabelEvent("🚀", true)
+                    self?.initLabelEvent("🚀", false)
+                }
+                else if statusCode == "0" { //"0" means network unavailable
+                    self?.initLabelEvent("❌", true)
+                    self?.initLabelEvent("❌", false)
+                }
+                else{
+                    guard let statusCode = statusCode else {return}
+                    self?.initLabelEvent(statusCode, true)
+                    self?.initLabelEvent(statusCode, false)
+                }
+            })
+            .disposed(by: rx.disposeBag)
+        
+        
         
         //内存监控
-        timer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timerMonitor), userInfo: nil, repeats: true)
-        guard let timer = timer else {return}
-        RunLoop.current.add(timer, forMode: .defaultRunLoopMode)
+        Observable<Int>
+            .interval(1, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (_) in
+                
+                self?._label?.text = MemoryHelper.shared().appUsedMemoryAndFreeMemory().components(separatedBy: "  ").first
+//                self?._sublabel?.text = MemoryHelper.shared().appUsedMemoryAndFreeMemory().components(separatedBy: "  ").last
+            })
+            .disposed(by: rx.disposeBag)
     }
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-        timer?.invalidate()
-    }
-    
-    //MARK: - notification
-    //网络通知
-    @objc func reloadHttp_notification(_ notification: Notification) {
-        
-        guard let userInfo = notification.userInfo else {return}
-        let statusCode = userInfo["statusCode"] as? String
-        
-        //https://httpstatuses.com/
-        let successStatusCodes = ["200","201","202","203","204","205","206","207","208","226"]
-        
-        if successStatusCodes.contains(statusCode ?? "") {
-            initLabelEvent("🚀", true)
-            initLabelEvent("🚀", false)
-        }
-        else if statusCode == "0" { //"0" means network unavailable
-            initLabelEvent("❌", true)
-            initLabelEvent("❌", false)
-        }
-        else{
-            guard let statusCode = statusCode else {return}
-            initLabelEvent(statusCode, true)
-            initLabelEvent(statusCode, false)
-        }
-    }
     
     //MARK: - target action
-    @objc func timerMonitor() {
-        _label?.text = MemoryHelper.shared().appUsedMemoryAndFreeMemory().components(separatedBy: "  ").first
-//        _sublabel?.text = MemoryHelper.shared().appUsedMemoryAndFreeMemory().components(separatedBy: "  ").last
-    }
-    
-    @objc func tap() {
-        delegate?.didTapDotzuXBubble()
-    }
-    
-    #if DEBUG//***************** Private API *****************
-    @available(iOS 11.0, *)
-    @objc func longPress(sender: UILongPressGestureRecognizer) {
-        if (sender.state == .began) {
-            guard let cls = NSClassFromString("UIDebuggingInformationOverlay") as? UIWindow.Type else {return}
-            
-            if !self.hasPerformedSetup {
-                cls.perform(NSSelectorFromString("prepareDebuggingOverlay"))
-                self.hasPerformedSetup = true
-            }
-            
-            let tapGesture = UITapGestureRecognizer()
-            tapGesture.state = .ended
-            
-            let handlerCls = NSClassFromString("UIDebuggingInformationOverlayInvokeGestureHandler") as! NSObject.Type
-            let handler = handlerCls.perform(NSSelectorFromString("mainHandler")).takeUnretainedValue()
-            let _ = handler.perform(NSSelectorFromString("_handleActivationGesture:"), with: tapGesture)
-        }
-    }
-    
-    @available(iOS 10.0, *)
-    @objc func longPress2(sender: UILongPressGestureRecognizer) {
-        if (sender.state == .began) {
-            let overlayClass = NSClassFromString("UIDebuggingInformationOverlay") as? UIWindow.Type
-            _ = overlayClass?.perform(NSSelectorFromString("prepareDebuggingOverlay"))
-            let overlay = overlayClass?.perform(NSSelectorFromString("overlay")).takeUnretainedValue() as? UIWindow
-            _ = overlay?.perform(NSSelectorFromString("toggleVisibility"))
-        }
-    }
-    #endif//***************** Private API *****************
-    
-    @objc func panDidFire(panner: UIPanGestureRecognizer) {
+    @objc func panDidFire(_ panner: UIPanGestureRecognizer) {
         if panner.state == .began {
             UIView.animate(withDuration: 0.5, delay: 0, options: .curveLinear, animations: { [weak self] in
                 self?.transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
@@ -329,5 +320,37 @@ class DotzuXBubble: UIView {
             })
         }
     }
+    
+    
+    #if DEBUG//***************** Private API *****************
+    @available(iOS 11.0, *)
+    @objc func longPress(_ sender: UILongPressGestureRecognizer) {
+        if (sender.state == .began) {
+            guard let cls = NSClassFromString("UIDebuggingInformationOverlay") as? UIWindow.Type else {return}
+            
+            if !self.hasPerformedSetup {
+                cls.perform(NSSelectorFromString("prepareDebuggingOverlay"))
+                self.hasPerformedSetup = true
+            }
+            
+            let tapGesture = UITapGestureRecognizer()
+            tapGesture.state = .ended
+            
+            let handlerCls = NSClassFromString("UIDebuggingInformationOverlayInvokeGestureHandler") as! NSObject.Type
+            let handler = handlerCls.perform(NSSelectorFromString("mainHandler")).takeUnretainedValue()
+            let _ = handler.perform(NSSelectorFromString("_handleActivationGesture:"), with: tapGesture)
+        }
+    }
+    
+    @available(iOS 10.0, *)
+    @objc func longPress2(_ sender: UILongPressGestureRecognizer) {
+        if (sender.state == .began) {
+            let overlayClass = NSClassFromString("UIDebuggingInformationOverlay") as? UIWindow.Type
+            _ = overlayClass?.perform(NSSelectorFromString("prepareDebuggingOverlay"))
+            let overlay = overlayClass?.perform(NSSelectorFromString("overlay")).takeUnretainedValue() as? UIWindow
+            _ = overlay?.perform(NSSelectorFromString("toggleVisibility"))
+        }
+    }
+    #endif//***************** Private API *****************
 }
 

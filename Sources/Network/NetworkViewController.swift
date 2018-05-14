@@ -7,11 +7,13 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 class NetworkViewController: UIViewController {
     
     var reachEnd: Bool = true
-    
     var firstIn: Bool = true
     
     var models: Array<HttpModel>?
@@ -99,7 +101,19 @@ class NetworkViewController: UIViewController {
 //        setNeedsStatusBarAppearanceUpdate()
         
         
-        NotificationCenter.default.addObserver(self, selector: #selector(reloadHttp_notification(_ :)), name: NSNotification.Name("reloadHttp_DotzuX"), object: nil)
+        //通知
+        NotificationCenter.default.rx
+            .notification(NSNotification.Name("reloadHttp_DotzuX"))
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { [weak self] (_) in
+                
+                if let reachEnd = self?.reachEnd {
+                    self?.reloadHttp(needScrollToEnd: reachEnd)
+                }
+            })
+            .disposed(by: rx.disposeBag)
+        
+        
         
         tableView.tableFooterView = UIView()
         tableView.dataSource = self
@@ -120,10 +134,7 @@ class NetworkViewController: UIViewController {
         super.viewWillDisappear(animated)
         searchBar.resignFirstResponder()
     }
-    
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
+
     
     //MARK: - target action
     @IBAction func tapTrashButton(_ sender: UIBarButtonItem) {
@@ -137,12 +148,6 @@ class NetworkViewController: UIViewController {
         dispatch_main_async_safe { [weak self] in
             self?.tableView.reloadData()
         }
-    }
-    
-    //MARK: - notification
-    @objc func reloadHttp_notification(_ notification: Notification) {
-        
-        reloadHttp(needScrollToEnd: reachEnd)
     }
 }
 

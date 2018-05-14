@@ -236,6 +236,12 @@
 		EA1659DC204D1B14001472C1 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA1659DA204D1B14001472C1 /* Main.storyboard */; };
 		EA1659DE204D1B14001472C1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA1659DD204D1B14001472C1 /* Assets.xcassets */; };
 		EA1659E1204D1B14001472C1 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = EA1659DF204D1B14001472C1 /* LaunchScreen.storyboard */; };
+		EA5D141520A930520021BDEF /* NSObject_Rx.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D13F320A92FE00021BDEF /* NSObject_Rx.framework */; };
+		EA5D141620A930520021BDEF /* NSObject_Rx.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D13F320A92FE00021BDEF /* NSObject_Rx.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EA5D141720A930520021BDEF /* RxCocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D13F420A92FE00021BDEF /* RxCocoa.framework */; };
+		EA5D141820A930520021BDEF /* RxCocoa.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D13F420A92FE00021BDEF /* RxCocoa.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EA5D141920A930520021BDEF /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D13F520A92FE00021BDEF /* RxSwift.framework */; };
+		EA5D141A20A930520021BDEF /* RxSwift.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA5D13F520A92FE00021BDEF /* RxSwift.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA617D4D2090291000EFDCCD /* WeakProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = EA617D492090291000EFDCCD /* WeakProxy.m */; };
 		EA617D4E2090291000EFDCCD /* FPSLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = EA617D4B2090291000EFDCCD /* FPSLabel.m */; };
 		EA617D4F20902FDB00EFDCCD /* FPSLabel.m in Sources */ = {isa = PBXBuildFile; fileRef = EA617D4B2090291000EFDCCD /* FPSLabel.m */; };
@@ -560,6 +566,22 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		EA5D141B20A930520021BDEF /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EA5D141820A930520021BDEF /* RxCocoa.framework in Embed Frameworks */,
+				EA5D141620A930520021BDEF /* NSObject_Rx.framework in Embed Frameworks */,
+				EA5D141A20A930520021BDEF /* RxSwift.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		EA0628E320541ACB0071A231 /* DotzuXSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DotzuXSettings.swift; sourceTree = "<group>"; };
 		EA0628E420541ACB0071A231 /* DotzuX.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DotzuX.h; sourceTree = "<group>"; };
@@ -810,6 +832,9 @@
 		EA1659E0204D1B14001472C1 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		EA1659E2204D1B14001472C1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EA165C6D204D1C13001472C1 /* Example_Swift-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Example_Swift-Bridging-Header.h"; sourceTree = "<group>"; };
+		EA5D13F320A92FE00021BDEF /* NSObject_Rx.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = NSObject_Rx.framework; sourceTree = "<group>"; };
+		EA5D13F420A92FE00021BDEF /* RxCocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxCocoa.framework; sourceTree = "<group>"; };
+		EA5D13F520A92FE00021BDEF /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = RxSwift.framework; sourceTree = "<group>"; };
 		EA617D492090291000EFDCCD /* WeakProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WeakProxy.m; sourceTree = "<group>"; };
 		EA617D4A2090291000EFDCCD /* FPSLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FPSLabel.h; sourceTree = "<group>"; };
 		EA617D4B2090291000EFDCCD /* FPSLabel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FPSLabel.m; sourceTree = "<group>"; };
@@ -920,6 +945,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA5D141720A930520021BDEF /* RxCocoa.framework in Frameworks */,
+				EA5D141520A930520021BDEF /* NSObject_Rx.framework in Frameworks */,
+				EA5D141920A930520021BDEF /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1280,11 +1308,13 @@
 		EA1659CA204D1B14001472C1 = {
 			isa = PBXGroup;
 			children = (
+				EA5D13F220A92FE00021BDEF /* RxSwift */,
 				EA0628E120541ACB0071A231 /* Sources */,
 				EA1659D5204D1B14001472C1 /* Example_Swift */,
 				EAF55AD7205540F0003E310F /* DotzuX */,
 				EA6B277720596883004D8E05 /* Example_SwiftTests */,
 				EA1659D4204D1B14001472C1 /* Products */,
+				EA5D141120A9303C0021BDEF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -1311,6 +1341,23 @@
 				EA165C6D204D1C13001472C1 /* Example_Swift-Bridging-Header.h */,
 			);
 			path = Example_Swift;
+			sourceTree = "<group>";
+		};
+		EA5D13F220A92FE00021BDEF /* RxSwift */ = {
+			isa = PBXGroup;
+			children = (
+				EA5D13F320A92FE00021BDEF /* NSObject_Rx.framework */,
+				EA5D13F420A92FE00021BDEF /* RxCocoa.framework */,
+				EA5D13F520A92FE00021BDEF /* RxSwift.framework */,
+			);
+			path = RxSwift;
+			sourceTree = "<group>";
+		};
+		EA5D141120A9303C0021BDEF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		EA617D482090291000EFDCCD /* FPS */ = {
@@ -1554,6 +1601,7 @@
 				EA1659CF204D1B14001472C1 /* Sources */,
 				EA1659D0204D1B14001472C1 /* Frameworks */,
 				EA1659D1204D1B14001472C1 /* Resources */,
+				EA5D141B20A930520021BDEF /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -2361,7 +2409,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "${SDK_DIR}/usr/include/libxml2";
+				FRAMEWORK_SEARCH_PATHS = (
+					"${SDK_DIR}/usr/include/libxml2",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/RxSwift",
+				);
 				HEADER_SEARCH_PATHS = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = Example_Swift/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
@@ -2384,7 +2436,11 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = "";
-				FRAMEWORK_SEARCH_PATHS = "${SDK_DIR}/usr/include/libxml2";
+				FRAMEWORK_SEARCH_PATHS = (
+					"${SDK_DIR}/usr/include/libxml2",
+					"$(PROJECT_DIR)",
+					"$(PROJECT_DIR)/RxSwift",
+				);
 				HEADER_SEARCH_PATHS = "${SDK_DIR}/usr/include/libxml2";
 				INFOPLIST_FILE = Example_Swift/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;

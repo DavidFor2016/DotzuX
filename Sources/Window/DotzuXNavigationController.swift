@@ -7,6 +7,9 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 class DotzuXNavigationController: UINavigationController {
 
@@ -19,17 +22,16 @@ class DotzuXNavigationController: UINavigationController {
         navigationBar.titleTextAttributes = [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 20),
                                              NSAttributedStringKey.foregroundColor: Color.mainGreen]
 
-        let selector = #selector(DotzuXNavigationController.exit)
-        
         let image = UIImage(named: "DotzuX_close", in: Bundle(for: DotzuXNavigationController.self), compatibleWith: nil)
-        let leftItem = UIBarButtonItem(image: image,
-                                         style: .done, target: self, action: selector)
-        leftItem.tintColor = Color.mainGreen
-        topViewController?.navigationItem.leftBarButtonItem = leftItem
-    }
-    
-    
-    @objc func exit() {
-        dismiss(animated: true, completion: nil)
+        let item = UIBarButtonItem(image: image, style: .done, target: nil, action: nil)
+        item.tintColor = Color.mainGreen
+        topViewController?.navigationItem.leftBarButtonItem = item
+        
+        item.rx
+            .tap
+            .subscribe(onNext: { [weak self] (_) in
+                self?.dismiss(animated: true, completion: nil)
+            })
+            .disposed(by: rx.disposeBag)
     }
 }

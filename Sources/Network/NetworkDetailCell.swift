@@ -8,6 +8,9 @@
 
 import Foundation
 import UIKit
+import RxSwift
+import RxCocoa
+import NSObject_Rx
 
 class NetworkDetailCell: UITableViewCell {
     
@@ -89,25 +92,35 @@ class NetworkDetailCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         
-        titleView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(tapTitleView)))
-        editView.addGestureRecognizer(UITapGestureRecognizer.init(target: self, action: #selector(tapEditView)))
-        
         contentTextView.textContainer.lineFragmentPadding = 0
         contentTextView.textContainerInset = .zero
-    }
-    
-    //MARK: - target action
-    //自动隐藏内容
-    @objc func tapTitleView() {
-        if let tapTitleViewCallback = tapTitleViewCallback {
-            tapTitleViewCallback(detailModel)
-        }
-    }
-    
-    //编辑
-    @objc func tapEditView() {
-        if let tapEditViewCallback = tapEditViewCallback {
-            tapEditViewCallback(detailModel)
-        }
+        
+        
+        //自动隐藏内容
+        let tap = UITapGestureRecognizer()
+        titleView.addGestureRecognizer(tap)
+        tap.rx
+            .event
+            .subscribe(onNext: { [weak self] (_) in
+                
+                if let tapTitleViewCallback = self?.tapTitleViewCallback {
+                    tapTitleViewCallback(self?.detailModel)
+                }
+            })
+            .disposed(by: rx.disposeBag)
+        
+        
+        //编辑
+        let tap2 = UITapGestureRecognizer()
+        editView.addGestureRecognizer(tap2)
+        tap2.rx
+            .event
+            .subscribe(onNext: { [weak self] (_) in
+                
+                if let tapEditViewCallback = self?.tapEditViewCallback {
+                    tapEditViewCallback(self?.detailModel)
+                }
+            })
+            .disposed(by: rx.disposeBag)
     }
 }

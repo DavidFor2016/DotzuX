@@ -6,13 +6,13 @@
 //  Copyright © 2017 Apple. All rights reserved.
 //
 
-#import "SessionProtocol.h"
+#import "SessionProtocol_default.h"
 #import "NetworkHelper.h"
 #import "HttpDatasource.h"
 #import "NSData+DotzuX.h"
 #import "Swizzling.h"
 
-#define kProtocolKey   @"SessionProtocol"
+#define kProtocolKey   @"SessionProtocol_default"
 #define dispatch_main_async_safe(block)\
 if ([NSThread isMainThread]) {\
 block();\
@@ -24,9 +24,6 @@ dispatch_async(dispatch_get_main_queue(), block);\
 typedef NSURLSessionConfiguration *(*SessionConfigConstructor)(id,SEL);
 
 static SessionConfigConstructor orig_defaultSessionConfiguration;
-static SessionConfigConstructor orig_ephemeralSessionConfiguration;
-static SessionConfigConstructor orig_backgroundSessionConfiguration; //Deprecated
-static SessionConfigConstructor orig_backgroundSessionConfigurationWithIdentifier;
 
 
 static NSURLSessionConfiguration *replaced_defaultSessionConfiguration(id self, SEL _cmd)
@@ -35,59 +32,7 @@ static NSURLSessionConfiguration *replaced_defaultSessionConfiguration(id self, 
     
     if ([config respondsToSelector:@selector(protocolClasses)] && [config respondsToSelector:@selector(setProtocolClasses:)]) {
         NSMutableArray *urlProtocolClasses = [NSMutableArray arrayWithArray:config.protocolClasses];
-        Class protoCls = SessionProtocol.class;
-        if (![urlProtocolClasses containsObject:protoCls]) {
-            [urlProtocolClasses insertObject:protoCls atIndex:0];
-        }
-        
-        config.protocolClasses = urlProtocolClasses;
-    }
-    
-    return config;
-}
-
-static NSURLSessionConfiguration *replaced_ephemeralSessionConfiguration(id self, SEL _cmd)
-{
-    NSURLSessionConfiguration *config = orig_ephemeralSessionConfiguration(self,_cmd);
-    
-    if ([config respondsToSelector:@selector(protocolClasses)] && [config respondsToSelector:@selector(setProtocolClasses:)]) {
-        NSMutableArray *urlProtocolClasses = [NSMutableArray arrayWithArray:config.protocolClasses];
-        Class protoCls = SessionProtocol.class;
-        if (![urlProtocolClasses containsObject:protoCls]) {
-            [urlProtocolClasses insertObject:protoCls atIndex:0];
-        }
-        
-        config.protocolClasses = urlProtocolClasses;
-    }
-    
-    return config;
-}
-
-//Deprecated
-static NSURLSessionConfiguration *replaced_backgroundSessionConfiguration(id self, SEL _cmd)
-{
-    NSURLSessionConfiguration *config = orig_backgroundSessionConfiguration(self,_cmd);
-    
-    if ([config respondsToSelector:@selector(protocolClasses)] && [config respondsToSelector:@selector(setProtocolClasses:)]) {
-        NSMutableArray *urlProtocolClasses = [NSMutableArray arrayWithArray:config.protocolClasses];
-        Class protoCls = SessionProtocol.class;
-        if (![urlProtocolClasses containsObject:protoCls]) {
-            [urlProtocolClasses insertObject:protoCls atIndex:0];
-        }
-        
-        config.protocolClasses = urlProtocolClasses;
-    }
-    
-    return config;
-}
-
-static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIdentifier(id self, SEL _cmd)
-{
-    NSURLSessionConfiguration *config = orig_backgroundSessionConfigurationWithIdentifier(self,_cmd);
-    
-    if ([config respondsToSelector:@selector(protocolClasses)] && [config respondsToSelector:@selector(setProtocolClasses:)]) {
-        NSMutableArray *urlProtocolClasses = [NSMutableArray arrayWithArray:config.protocolClasses];
-        Class protoCls = SessionProtocol.class;
+        Class protoCls = SessionProtocol_default.class;
         if (![urlProtocolClasses containsObject:protoCls]) {
             [urlProtocolClasses insertObject:protoCls atIndex:0];
         }
@@ -100,7 +45,7 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
 
 #pragma mark -------------------------------------------------------------------------------------
 
-@interface SessionProtocol()<NSURLSessionDelegate>
+@interface SessionProtocol_default()<NSURLSessionDelegate>
 @property (atomic,strong,readwrite) NSURLSessionDataTask *task;
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSOperationQueue *queue;
@@ -110,7 +55,7 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
 @property (nonatomic, assign) NSTimeInterval  startTime;
 @end
 
-@implementation SessionProtocol
+@implementation SessionProtocol_default
 
 
 #pragma mark - getter
@@ -393,15 +338,8 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        
+
         orig_defaultSessionConfiguration = (SessionConfigConstructor)replaceMethod(@selector(defaultSessionConfiguration), (IMP)replaced_defaultSessionConfiguration, [NSURLSessionConfiguration class], YES);
-        
-        orig_ephemeralSessionConfiguration = (SessionConfigConstructor)replaceMethod(@selector(ephemeralSessionConfiguration), (IMP)replaced_ephemeralSessionConfiguration, [NSURLSessionConfiguration class], YES);
-        
-        //Deprecated
-        orig_backgroundSessionConfiguration = (SessionConfigConstructor)replaceMethod(@selector(backgroundSessionConfiguration:), (IMP)replaced_backgroundSessionConfiguration, [NSURLSessionConfiguration class], YES);
-        
-        orig_backgroundSessionConfigurationWithIdentifier = (SessionConfigConstructor)replaceMethod(@selector(backgroundSessionConfigurationWithIdentifier:), (IMP)replaced_backgroundSessionConfigurationWithIdentifier, [NSURLSessionConfiguration class], YES);
     });
 }
 
@@ -450,7 +388,7 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
     
     
     NSMutableURLRequest *mutableReqeust = [[self request] mutableCopy];
-    // 标示改request已经处理过了，防止无限循环
+    // 标示request已经处理过了，防止无限循环
     [NSURLProtocol setProperty:@YES forKey:kProtocolKey inRequest:mutableReqeust];
     
     NSURLSessionConfiguration *configure = [NSURLSessionConfiguration defaultSessionConfiguration];

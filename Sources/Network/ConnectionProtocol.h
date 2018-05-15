@@ -1,13 +1,13 @@
+////
+////  DotzuX.swift
+////  demo
+////
+////  Created by liman on 26/11/2017.
+////  Copyright © 2017 Apple. All rights reserved.
+////
 //
-//  DotzuX.swift
-//  demo
+//#import <Foundation/Foundation.h>
 //
-//  Created by liman on 26/11/2017.
-//  Copyright © 2017 Apple. All rights reserved.
+//@interface ConnectionProtocol : NSURLProtocol
 //
-
-#import <Foundation/Foundation.h>
-
-@interface ConnectionProtocol : NSURLProtocol
-
-@end
+//@end

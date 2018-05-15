@@ -100,8 +100,10 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
 
 #pragma mark -------------------------------------------------------------------------------------
 
-@interface SessionProtocol()<NSURLConnectionDelegate, NSURLConnectionDataDelegate>
-@property (nonatomic, strong) NSURLConnection *connection;
+@interface SessionProtocol()<NSURLSessionDelegate>
+@property (atomic,strong,readwrite) NSURLSessionDataTask *task;
+@property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong) NSOperationQueue *queue;
 @property (nonatomic, strong) NSURLResponse *response;
 @property (nonatomic, strong) NSMutableData *data;
 @property (nonatomic, strong) NSError *error;
@@ -110,6 +112,15 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
 
 @implementation SessionProtocol
 
+
+#pragma mark - getter
+- (NSOperationQueue *)queue
+{
+    if (!_queue) {
+        _queue = [[NSOperationQueue alloc] init];
+    }
+    return _queue;
+}
 
 #pragma mark - helper
 //处理500,404等错误
@@ -378,7 +389,7 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
     return model;
 }
 
-#pragma mark - protocol
+#pragma mark - init
 + (void)load {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -394,6 +405,7 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
     });
 }
 
+#pragma mark - protocol
 + (BOOL)canInitWithRequest:(NSURLRequest *)request {
     if (![request.URL.scheme isEqualToString:@"http"] &&
         ![request.URL.scheme isEqualToString:@"https"]) {
@@ -416,23 +428,42 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
     return YES;
 }
 
-+ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request {
-    NSMutableURLRequest *mutableReqeust = [request mutableCopy];
-    [NSURLProtocol setProperty:@YES forKey:kProtocolKey inRequest:mutableReqeust];
-    return [mutableReqeust copy];
++ (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest *)request
+{
+//    NSMutableURLRequest *mutableReqeust = [request mutableCopy];
+//    // 执行自定义操作，例如添加统一的请求头等
+//    return [mutableReqeust copy];
+    
+    return request;
 }
 
-- (void)startLoading {
+// 判重
++ (BOOL)requestIsCacheEquivalent:(NSURLRequest *)a toRequest:(NSURLRequest *)b
+{
+    return [super requestIsCacheEquivalent:a toRequest:b];
+}
+
+- (void)startLoading
+{
     self.data = [NSMutableData data];
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-    self.connection = [[NSURLConnection alloc] initWithRequest:[[self class] canonicalRequestForRequest:self.request] delegate:self startImmediately:YES];
-#pragma clang diagnostic pop
     self.startTime = [[NSDate date] timeIntervalSince1970];
+    
+    
+    NSMutableURLRequest *mutableReqeust = [[self request] mutableCopy];
+    // 标示改request已经处理过了，防止无限循环
+    [NSURLProtocol setProperty:@YES forKey:kProtocolKey inRequest:mutableReqeust];
+    
+    NSURLSessionConfiguration *configure = [NSURLSessionConfiguration defaultSessionConfiguration];
+    self.session  = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
+    self.task = [self.session dataTaskWithRequest:mutableReqeust];
+    [self.task resume];
 }
 
-- (void)stopLoading {
-    [self.connection cancel];
+- (void)stopLoading
+{
+    [self.session invalidateAndCancel];
+    self.session = nil;
+    
     
     if (![NetworkHelper shared].isEnable) {
         return;
@@ -500,47 +531,50 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfigurationWithIde
     }
 }
 
-#pragma mark - NSURLConnectionDelegate
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error
+
+#pragma mark - NSURLSessionDelegate
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task didCompleteWithError:(NSError *)error
 {
-    [[self client] URLProtocol:self didFailWithError:error];
     self.error = error;
+    
+    if (error) {
+        [self.client URLProtocol:self didFailWithError:error];
+    }else{
+        [self.client URLProtocolDidFinishLoading:self];
+    }
 }
 
-- (BOOL)connectionShouldUseCredentialStorage:(NSURLConnection *)connection {
-    return YES;
-}
-
-#pragma GCC diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-implementations"
-- (void)connection:(NSURLConnection *)connection didReceiveAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    [[self client] URLProtocol:self didReceiveAuthenticationChallenge:challenge];
-}
-- (void)connection:(NSURLConnection *)connection didCancelAuthenticationChallenge:(NSURLAuthenticationChallenge *)challenge {
-    [[self client] URLProtocol:self didCancelAuthenticationChallenge:challenge];
-}
-#pragma GCC diagnostic pop
-
-#pragma mark - NSURLConnectionDataDelegate
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler
 {
-    [[self client] URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageAllowed];
     self.response = response;
+    
+    [self.client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
+    completionHandler(NSURLSessionResponseAllow);
 }
 
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data
 {
-    [[self client] URLProtocol:self didLoadData:data];
     [self.data appendData:data];
+    
+    [self.client URLProtocol:self didLoadData:data];
 }
 
-- (NSCachedURLResponse *)connection:(NSURLConnection *)connection willCacheResponse:(NSCachedURLResponse *)cachedResponse
+- (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask willCacheResponse:(NSCachedURLResponse *)proposedResponse completionHandler:(void (^)(NSCachedURLResponse * _Nullable))completionHandler
 {
-    return cachedResponse;
+    completionHandler(proposedResponse);
 }
 
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    [[self client] URLProtocolDidFinishLoading:self];
+//重定向
+- (void)URLSession:(NSURLSession *)session task:(NSURLSessionTask *)task willPerformHTTPRedirection:(NSHTTPURLResponse *)response newRequest:(NSURLRequest *)newRequest completionHandler:(void (^)(NSURLRequest *))completionHandler
+{
+    NSMutableURLRequest *redirectRequest;
+    redirectRequest = [newRequest mutableCopy];
+    [[self class] removePropertyForKey:kProtocolKey inRequest:redirectRequest];
+    [[self client] URLProtocol:self wasRedirectedToRequest:redirectRequest redirectResponse:response];
+    
+    [self.task cancel];
+    [[self client] URLProtocol:self didFailWithError:[NSError errorWithDomain:NSCocoaErrorDomain code:NSUserCancelledError userInfo:nil]];
 }
+
 @end
 

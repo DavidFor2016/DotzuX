@@ -245,6 +245,7 @@
 		EA6B277920596883004D8E05 /* Example_SwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6B277820596883004D8E05 /* Example_SwiftTests.swift */; };
 		EAB82F8C20AB03E900BCBFE9 /* ConnectionProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F8B20AB03E800BCBFE9 /* ConnectionProtocol.m */; };
 		EAB82F9820AB146000BCBFE9 /* SessionProtocol_ephemeral.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F9720AB146000BCBFE9 /* SessionProtocol_ephemeral.m */; };
+		EAB82F9B20AB156700BCBFE9 /* SessionProtocol_background.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F9A20AB156700BCBFE9 /* SessionProtocol_background.m */; };
 		EAE674242064085300282B31 /* copy_and_codesign.sh in Resources */ = {isa = PBXBuildFile; fileRef = EAE674232064085200282B31 /* copy_and_codesign.sh */; };
 		EAE674262064090E00282B31 /* copy_and_codesign.sh in Headers */ = {isa = PBXBuildFile; fileRef = EAE674232064085200282B31 /* copy_and_codesign.sh */; };
 		EAF55AE320554164003E310F /* SessionProtocol_default.m in Sources */ = {isa = PBXBuildFile; fileRef = EA0629A620541ACB0071A231 /* SessionProtocol_default.m */; };
@@ -823,6 +824,8 @@
 		EAB82F8B20AB03E800BCBFE9 /* ConnectionProtocol.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionProtocol.m; sourceTree = "<group>"; };
 		EAB82F9620AB146000BCBFE9 /* SessionProtocol_ephemeral.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionProtocol_ephemeral.h; sourceTree = "<group>"; };
 		EAB82F9720AB146000BCBFE9 /* SessionProtocol_ephemeral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionProtocol_ephemeral.m; sourceTree = "<group>"; };
+		EAB82F9920AB156700BCBFE9 /* SessionProtocol_background.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SessionProtocol_background.h; sourceTree = "<group>"; };
+		EAB82F9A20AB156700BCBFE9 /* SessionProtocol_background.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SessionProtocol_background.m; sourceTree = "<group>"; };
 		EAE674232064085200282B31 /* copy_and_codesign.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = copy_and_codesign.sh; sourceTree = "<group>"; };
 		EAF55AD6205540F0003E310F /* DotzuX.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = DotzuX.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAF55AD8205540F0003E310F /* DotzuX.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DotzuX.h; sourceTree = "<group>"; };
@@ -1197,6 +1200,8 @@
 				EA0629A620541ACB0071A231 /* SessionProtocol_default.m */,
 				EAB82F9620AB146000BCBFE9 /* SessionProtocol_ephemeral.h */,
 				EAB82F9720AB146000BCBFE9 /* SessionProtocol_ephemeral.m */,
+				EAB82F9920AB156700BCBFE9 /* SessionProtocol_background.h */,
+				EAB82F9A20AB156700BCBFE9 /* SessionProtocol_background.m */,
 				EAB82F8A20AB03E800BCBFE9 /* ConnectionProtocol.h */,
 				EAB82F8B20AB03E800BCBFE9 /* ConnectionProtocol.m */,
 				EA0629A720541ACB0071A231 /* JsonViewController.swift */,
@@ -2082,6 +2087,7 @@
 				EAF58025204E73C3001CA56D /* Networking+POST.swift in Sources */,
 				EAF5801C204E73C3001CA56D /* Networking+GET.swift in Sources */,
 				EAF5802B204E73C3001CA56D /* StatusCode.swift in Sources */,
+				EAB82F9B20AB156700BCBFE9 /* SessionProtocol_background.m in Sources */,
 				EA062AB920541ACB0071A231 /* DotzuXBubble.swift in Sources */,
 				EA0629ED20541ACB0071A231 /* AboutViewController.swift in Sources */,
 				EA062AA220541ACB0071A231 /* NetworkCell.swift in Sources */,

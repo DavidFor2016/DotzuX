@@ -9,6 +9,7 @@
 #import "NetworkHelper.h"
 #import "SessionProtocol_default.h"
 #import "SessionProtocol_ephemeral.h"
+#import "SessionProtocol_background.h"
 
 @interface NetworkHelper()
 
@@ -33,6 +34,7 @@
     self.isEnable = YES;
     [NSURLProtocol registerClass:[SessionProtocol_default class]];
     [NSURLProtocol registerClass:[SessionProtocol_ephemeral class]];
+    [NSURLProtocol registerClass:[SessionProtocol_background class]];
 }
 
 - (void)disable
@@ -40,6 +42,7 @@
     self.isEnable = NO;
     [NSURLProtocol unregisterClass:[SessionProtocol_default class]];
     [NSURLProtocol unregisterClass:[SessionProtocol_ephemeral class]];
+    [NSURLProtocol unregisterClass:[SessionProtocol_background class]];
 }
 
 @end

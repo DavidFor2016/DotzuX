@@ -6,13 +6,13 @@
 //  Copyright © 2017 Apple. All rights reserved.
 //
 
-#import "SessionProtocol_ephemeral.h"
+#import "SessionProtocol_background.h"
 #import "NetworkHelper.h"
 #import "HttpDatasource.h"
 #import "NSData+DotzuX.h"
 #import "Swizzling.h"
 
-#define kProtocolKey   @"SessionProtocol_ephemeral"
+#define kProtocolKey   @"SessionProtocol_background"
 #define dispatch_main_async_safe(block)\
 if ([NSThread isMainThread]) {\
 block();\
@@ -23,17 +23,17 @@ dispatch_async(dispatch_get_main_queue(), block);\
 
 typedef NSURLSessionConfiguration *(*SessionConfigConstructor)(id,SEL);
 
-static SessionConfigConstructor orig_ephemeralSessionConfiguration;
+static SessionConfigConstructor orig_backgroundSessionConfiguration;
 
 
 
-static NSURLSessionConfiguration *replaced_ephemeralSessionConfiguration(id self, SEL _cmd)
+static NSURLSessionConfiguration *replaced_backgroundSessionConfiguration(id self, SEL _cmd)
 {
-    NSURLSessionConfiguration *config = orig_ephemeralSessionConfiguration(self,_cmd);
+    NSURLSessionConfiguration *config = orig_backgroundSessionConfiguration(self,_cmd);
     
     if ([config respondsToSelector:@selector(protocolClasses)] && [config respondsToSelector:@selector(setProtocolClasses:)]) {
         NSMutableArray *urlProtocolClasses = [NSMutableArray arrayWithArray:config.protocolClasses];
-        Class protoCls = SessionProtocol_ephemeral.class;
+        Class protoCls = SessionProtocol_background.class;
         if (![urlProtocolClasses containsObject:protoCls]) {
             [urlProtocolClasses insertObject:protoCls atIndex:0];
         }
@@ -46,7 +46,7 @@ static NSURLSessionConfiguration *replaced_ephemeralSessionConfiguration(id self
 
 #pragma mark -------------------------------------------------------------------------------------
 
-@interface SessionProtocol_ephemeral()<NSURLSessionDelegate>
+@interface SessionProtocol_background()<NSURLSessionDelegate>
 @property (atomic,strong,readwrite) NSURLSessionDataTask *task;
 @property (nonatomic, strong) NSURLSession *session;
 @property (nonatomic, strong) NSOperationQueue *queue;
@@ -56,7 +56,7 @@ static NSURLSessionConfiguration *replaced_ephemeralSessionConfiguration(id self
 @property (nonatomic, assign) NSTimeInterval  startTime;
 @end
 
-@implementation SessionProtocol_ephemeral
+@implementation SessionProtocol_background
 
 
 #pragma mark - getter
@@ -73,7 +73,7 @@ static NSURLSessionConfiguration *replaced_ephemeralSessionConfiguration(id self
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         
-        orig_ephemeralSessionConfiguration = (SessionConfigConstructor)replaceMethod(@selector(ephemeralSessionConfiguration), (IMP)replaced_ephemeralSessionConfiguration, [NSURLSessionConfiguration class], YES);
+        orig_backgroundSessionConfiguration = (SessionConfigConstructor)replaceMethod(@selector(backgroundSessionConfigurationWithIdentifier:), (IMP)replaced_backgroundSessionConfiguration, [NSURLSessionConfiguration class], YES);
     });
 }
 
@@ -125,7 +125,7 @@ static NSURLSessionConfiguration *replaced_ephemeralSessionConfiguration(id self
     // 标示request已经处理过了，防止无限循环
     [NSURLProtocol setProperty:@YES forKey:kProtocolKey inRequest:mutableReqeust];
     
-    NSURLSessionConfiguration *configure = [NSURLSessionConfiguration ephemeralSessionConfiguration];
+    NSURLSessionConfiguration *configure = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@""];
     self.session  = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
     self.task = [self.session dataTaskWithRequest:mutableReqeust];
     [self.task resume];

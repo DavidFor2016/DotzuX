@@ -261,8 +261,13 @@ extension UIViewController {
 extension DotzuX {
     
     ///init
-    static func initializationMethod(serverURL: String? = nil, ignoredURLs: [String]? = nil, onlyURLs: [String]? = nil, tabBarControllers: [UIViewController]? = nil, recordCrash: Bool = false)
+    static func initializationMethod(serverURL: String? = nil, ignoredURLs: [String]? = nil, onlyURLs: [String]? = nil, tabBarControllers: [UIViewController]? = nil, recordCrash: Bool = false, backgroundSessionConfigurationIdentifier: String? = nil)
     {
+        if backgroundSessionConfigurationIdentifier == nil {
+            DotzuXSettings.shared.backgroundSessionConfigurationIdentifier = ""
+        }else{
+            DotzuXSettings.shared.backgroundSessionConfigurationIdentifier = backgroundSessionConfigurationIdentifier
+        }
         if serverURL == nil {
             DotzuXSettings.shared.serverURL = ""
         }else{

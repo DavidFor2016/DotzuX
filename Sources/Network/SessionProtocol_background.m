@@ -125,7 +125,7 @@ static NSURLSessionConfiguration *replaced_backgroundSessionConfiguration(id sel
     // 标示request已经处理过了，防止无限循环
     [NSURLProtocol setProperty:@YES forKey:kProtocolKey inRequest:mutableReqeust];
     
-    NSURLSessionConfiguration *configure = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:@""];
+    NSURLSessionConfiguration *configure = [NSURLSessionConfiguration backgroundSessionConfigurationWithIdentifier:[NetworkHelper shared].backgroundSessionConfigurationIdentifier];
     self.session  = [NSURLSession sessionWithConfiguration:configure delegate:self delegateQueue:self.queue];
     self.task = [self.session dataTaskWithRequest:mutableReqeust];
     [self.task resume];

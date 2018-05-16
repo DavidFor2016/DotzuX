@@ -136,6 +136,11 @@ import Foundation
             NetworkHelper.shared().ignoredURLs = ignoredURLs
         }
     }
+    @objc public var backgroundSessionConfigurationIdentifier: String? = nil {
+        didSet {
+            NetworkHelper.shared().backgroundSessionConfigurationIdentifier = backgroundSessionConfigurationIdentifier
+        }
+    }
     
     
     
@@ -158,5 +163,6 @@ import Foundation
         logMaxCount = NetworkHelper.shared().logMaxCount
         onlyURLs = NetworkHelper.shared().onlyURLs
         ignoredURLs = NetworkHelper.shared().ignoredURLs
+        backgroundSessionConfigurationIdentifier = NetworkHelper.shared().backgroundSessionConfigurationIdentifier
     }
 }

@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //            DotzuX.tabBarControllers = [UIViewController(), UIViewController()] //default value is `nil`
 //            DotzuX.recordCrash = true //default value is `false`
 //            DotzuX.logMaxCount = 1000 //default value is `500`
+//            DotzuX.backgroundSessionConfigurationIdentifier = "foo" //default value is `nil`
             DotzuX.enable()
         #endif
         

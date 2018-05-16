@@ -25,7 +25,13 @@
  *  日志最大数量,默认`500`
  */
 @property (nonatomic, assign) NSInteger logMaxCount;
-
+/**
+ *  backgroundSessionConfiguration identifier
+ */
+@property (nonatomic, copy) NSString *backgroundSessionConfigurationIdentifier;
+/**
+ *  检查是否启用
+ */
 @property (nonatomic, assign) BOOL isEnable;
 
 /**

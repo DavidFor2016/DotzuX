@@ -22,11 +22,13 @@ import Foundation
     @objc public static var recordCrash: Bool = false
     ///the maximum count of logs which DotzuX display. default value is `500`.
     @objc public static var logMaxCount: Int = 500
+    ///backgroundSessionConfiguration identifier. default value is `nil`.
+    @objc public static var backgroundSessionConfigurationIdentifier: String? = nil
     
     
     //MARK: - DotzuX enable
     @objc public static func enable() {
-        initializationMethod(serverURL: serverURL, ignoredURLs: ignoredURLs, onlyURLs: onlyURLs, tabBarControllers: tabBarControllers, recordCrash: recordCrash)
+        initializationMethod(serverURL: serverURL, ignoredURLs: ignoredURLs, onlyURLs: onlyURLs, tabBarControllers: tabBarControllers, recordCrash: recordCrash, backgroundSessionConfigurationIdentifier: backgroundSessionConfigurationIdentifier)
     }
     
     //MARK: - DotzuX disable

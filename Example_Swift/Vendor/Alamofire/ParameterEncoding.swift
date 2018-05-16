@@ -274,7 +274,6 @@ public struct JSONEncoding: ParameterEncoding {
     /// Returns a `JSONEncoding` instance with default writing options.
     public static var `default`: JSONEncoding { return JSONEncoding() }
 
-    /// Returns a `JSONEncoding` instance with `.prettyPrinted` writing options.
     public static var prettyPrinted: JSONEncoding { return JSONEncoding(options: .prettyPrinted) }
 
     /// The options for writing the parameters as JSON data.

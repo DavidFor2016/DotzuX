@@ -357,7 +357,6 @@ public func upload(_ stream: InputStream, with urlRequest: URLRequestConvertible
 /// payload is small, encoding the data in-memory and directly uploading to a server is the by far the most
 /// efficient approach. However, if the payload is too large, encoding the data in-memory could cause your app to
 /// be terminated. Larger payloads must first be written to disk using input and output streams to keep the memory
-/// footprint low, then the data can be uploaded as a stream from the resulting file. Streaming from disk MUST be
 /// used for larger payloads such as video content.
 ///
 /// The `encodingMemoryThreshold` parameter allows Alamofire to automatically determine whether to encode in-memory
@@ -398,7 +397,6 @@ public func upload(
 /// payload is small, encoding the data in-memory and directly uploading to a server is the by far the most
 /// efficient approach. However, if the payload is too large, encoding the data in-memory could cause your app to
 /// be terminated. Larger payloads must first be written to disk using input and output streams to keep the memory
-/// footprint low, then the data can be uploaded as a stream from the resulting file. Streaming from disk MUST be
 /// used for larger payloads such as video content.
 ///
 /// The `encodingMemoryThreshold` parameter allows Alamofire to automatically determine whether to encode in-memory

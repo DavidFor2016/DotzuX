@@ -65,7 +65,7 @@
 //        NSString *fileExtension = [self.URL pathExtension];
 //        NSString *UTI = (__bridge_transfer NSString *)UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, (__bridge CFStringRef)fileExtension, NULL);
 //        NSString *contentType = (__bridge_transfer NSString *)UTTypeCopyPreferredTagWithClass((__bridge CFStringRef)UTI, kUTTagClassMIMEType);
-//        NSLog(@"%@, UTI = %@, contentType = %@", self.URL.lastPathComponent, UTI, contentType);
+
         
         switch (self.type) {
             case MLBFileTypeUnknown: _typeImageName = @"icon_file_type_default"; break;
@@ -194,14 +194,13 @@
     NSError *error;
     NSDictionary<NSString *, id> *attributes = [NSFileManager.defaultManager attributesOfItemAtPath:URL.path error:&error];
     if (error) {
-//        NSLog(@"%@, error: %@", NSStringFromSelector(_cmd), error.localizedDescription);
+
     }
     
     return attributes;
 }
 
 + (NSMutableArray<MLBFileInfo *> *)contentsOfDirectoryAtURL:(NSURL *)URL {
-//    NSLog(@"%@, url = %@", NSStringFromSelector(_cmd), URL.path);
     NSMutableArray *fileInfos = @[].mutableCopy;
     BOOL isDir = NO;
     BOOL isExists = [NSFileManager.defaultManager fileExistsAtPath:URL.path isDirectory:&isDir];
@@ -215,7 +214,7 @@
                 [fileInfos addObject:fileInfo];
             }
         } else {
-//            NSLog(@"%@, error: %@", NSStringFromSelector(_cmd), error.localizedDescription);
+
         }
     }
     
@@ -224,7 +223,6 @@
 }
 
 + (NSUInteger)contentCountOfDirectoryAtURL:(NSURL *)URL {
-//    NSLog(@"%@, url = %@", NSStringFromSelector(_cmd), URL.path);
     NSUInteger count = 0;
     BOOL isDir = NO;
     BOOL isExists = [NSFileManager.defaultManager fileExistsAtPath:URL.path isDirectory:&isDir];
@@ -237,7 +235,7 @@
                 count++;
             }
         } else {
-//            NSLog(@"%@, error: %@", NSStringFromSelector(_cmd), error.localizedDescription);
+
         }
     }
     

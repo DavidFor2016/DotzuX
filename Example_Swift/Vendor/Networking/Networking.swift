@@ -688,31 +688,20 @@ extension Networking {
         if disableErrorLogging { return }
         guard let error = error else { return }
 
-//        print(" ")
-//        print("========== Networking Error ==========")
-//        print(" ")
 
         let isCancelled = error.code == NSURLErrorCancelled
         if isCancelled {
             if let request = request, let _ = request.url {
-//                print("Cancelled request: \(url.absoluteString)")
-//                print(" ")
+
             }
         } else {
-//            print("*** Request ***")
-//            print(" ")
-
-//            print("Error \(error.code): \(error.description)")
-//            print(" ")
 
             if let request = request, let _ = request.url {
-//                print("URL: \(url.absoluteString)")
-//                print(" ")
+
             }
 
             if (request?.allHTTPHeaderFields) != nil {
-//                print("Headers: \(headers)")
-//                print(" ")
+
             }
 
             if let parameterType = parameterType, let parameters = parameters {
@@ -722,43 +711,31 @@ extension Networking {
                         let data = try JSONSerialization.data(withJSONObject: parameters, options: .prettyPrinted)
                         let string = String(data: data, encoding: .utf8)
                         if string != nil {
-//                            print("Parameters: \(string)")
-//                            print(" ")
+
                         }
                     } catch _ as NSError {
-//                        print("Failed pretty printing parameters: \(parameters), error: \(error)")
-//                        print(" ")
+
                     }
                 case .formURLEncoded:
                     guard let parametersDictionary = parameters as? [String: Any] else { fatalError("Couldn't cast parameters as dictionary: \(parameters)") }
                     do {
                         _ = try parametersDictionary.urlEncodedString()
-//                        print("Parameters: \(formattedParameters)")
+
                     } catch _ as NSError {
-//                        print("Failed parsing Parameters: \(parametersDictionary) — \(error)")
+
                     }
-//                    print(" ")
+
                 default: break
                 }
             }
 
             if let data = data, let _ = String(data: data, encoding: .utf8) {
-//                print("Data: \(stringData)")
-//                print(" ")
+
             }
 
             if (response as? HTTPURLResponse) != nil {
-//                print("*** Response ***")
-//                print(" ")
 
-//                print("Headers: \(response.allHeaderFields)")
-//                print(" ")
-
-//                print("Status code: \(response.statusCode) — \(HTTPURLResponse.localizedString(forStatusCode: response.statusCode))")
-//                print(" ")
             }
         }
-//        print("================= ~ ==================")
-//        print(" ")
     }
 }

@@ -246,6 +246,12 @@
 		EAB82F8C20AB03E900BCBFE9 /* ConnectionProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F8B20AB03E800BCBFE9 /* ConnectionProtocol.m */; };
 		EAB82F9820AB146000BCBFE9 /* SessionProtocol_ephemeral.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F9720AB146000BCBFE9 /* SessionProtocol_ephemeral.m */; };
 		EAB82F9B20AB156700BCBFE9 /* SessionProtocol_background.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F9A20AB156700BCBFE9 /* SessionProtocol_background.m */; };
+		EAB82F9C20AC052700BCBFE9 /* SessionProtocol_ephemeral.h in Headers */ = {isa = PBXBuildFile; fileRef = EAB82F9620AB146000BCBFE9 /* SessionProtocol_ephemeral.h */; };
+		EAB82F9D20AC052700BCBFE9 /* SessionProtocol_background.h in Headers */ = {isa = PBXBuildFile; fileRef = EAB82F9920AB156700BCBFE9 /* SessionProtocol_background.h */; };
+		EAB82F9E20AC054400BCBFE9 /* SessionProtocol_ephemeral.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F9720AB146000BCBFE9 /* SessionProtocol_ephemeral.m */; };
+		EAB82F9F20AC054400BCBFE9 /* SessionProtocol_background.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F9A20AB156700BCBFE9 /* SessionProtocol_background.m */; };
+		EAB82FA020AC05E000BCBFE9 /* ConnectionProtocol.h in Headers */ = {isa = PBXBuildFile; fileRef = EAB82F8A20AB03E800BCBFE9 /* ConnectionProtocol.h */; };
+		EAB82FA120AC05E800BCBFE9 /* ConnectionProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB82F8B20AB03E800BCBFE9 /* ConnectionProtocol.m */; };
 		EAE674242064085300282B31 /* copy_and_codesign.sh in Resources */ = {isa = PBXBuildFile; fileRef = EAE674232064085200282B31 /* copy_and_codesign.sh */; };
 		EAE674262064090E00282B31 /* copy_and_codesign.sh in Headers */ = {isa = PBXBuildFile; fileRef = EAE674232064085200282B31 /* copy_and_codesign.sh */; };
 		EAF55AE320554164003E310F /* SessionProtocol_default.m in Sources */ = {isa = PBXBuildFile; fileRef = EA0629A620541ACB0071A231 /* SessionProtocol_default.m */; };
@@ -1204,18 +1210,18 @@
 				EAB82F9A20AB156700BCBFE9 /* SessionProtocol_background.m */,
 				EAB82F8A20AB03E800BCBFE9 /* ConnectionProtocol.h */,
 				EAB82F8B20AB03E800BCBFE9 /* ConnectionProtocol.m */,
-				EA0629A720541ACB0071A231 /* JsonViewController.swift */,
-				EA0629A820541ACB0071A231 /* HttpModel.m */,
-				EA0629A920541ACB0071A231 /* HttpDatasource.m */,
+				EA0629B320541ACB0071A231 /* NetworkHelper.h */,
 				EA0629AA20541ACB0071A231 /* NetworkHelper.m */,
+				EA0629AD20541ACB0071A231 /* HttpModel.h */,
+				EA0629A820541ACB0071A231 /* HttpModel.m */,
+				EA0629AF20541ACB0071A231 /* HttpDatasource.h */,
+				EA0629A920541ACB0071A231 /* HttpDatasource.m */,
+				EA0629A720541ACB0071A231 /* JsonViewController.swift */,
 				EA0629AB20541ACB0071A231 /* NetworkCell.swift */,
 				EA0629AC20541ACB0071A231 /* NetworkViewController.swift */,
-				EA0629AD20541ACB0071A231 /* HttpModel.h */,
-				EA0629AF20541ACB0071A231 /* HttpDatasource.h */,
 				EA0629B020541ACB0071A231 /* NetworkDetailViewController.swift */,
 				EA0629B120541ACB0071A231 /* NetworkDetailCell.swift */,
 				EA0629B220541ACB0071A231 /* NetworkDetailModel.swift */,
-				EA0629B320541ACB0071A231 /* NetworkHelper.h */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -1236,18 +1242,18 @@
 		EA0629BB20541ACB0071A231 /* Sandbox */ = {
 			isa = PBXGroup;
 			children = (
-				EA0629BC20541ACB0071A231 /* SandboxHelper.m */,
 				EA0629BD20541ACB0071A231 /* MLBFileInfo.h */,
-				EA0629BE20541ACB0071A231 /* FileTableViewCell.m */,
-				EA0629BF20541ACB0071A231 /* FilePreviewController.m */,
-				EA0629C020541ACB0071A231 /* SandboxViewController.m */,
-				EA0629C120541ACB0071A231 /* Sandbox.m */,
-				EA0629C220541ACB0071A231 /* FileTableViewCell.h */,
 				EA0629C320541ACB0071A231 /* MLBFileInfo.m */,
-				EA0629C420541ACB0071A231 /* SandboxHelper.h */,
+				EA0629C220541ACB0071A231 /* FileTableViewCell.h */,
+				EA0629BE20541ACB0071A231 /* FileTableViewCell.m */,
 				EA0629C520541ACB0071A231 /* FilePreviewController.h */,
-				EA0629C620541ACB0071A231 /* Sandbox.h */,
+				EA0629BF20541ACB0071A231 /* FilePreviewController.m */,
 				EA0629C720541ACB0071A231 /* SandboxViewController.h */,
+				EA0629C020541ACB0071A231 /* SandboxViewController.m */,
+				EA0629C620541ACB0071A231 /* Sandbox.h */,
+				EA0629C120541ACB0071A231 /* Sandbox.m */,
+				EA0629C420541ACB0071A231 /* SandboxHelper.h */,
+				EA0629BC20541ACB0071A231 /* SandboxHelper.m */,
 			);
 			path = Sandbox;
 			sourceTree = "<group>";
@@ -1547,6 +1553,9 @@
 				EAF55B272055417C003E310F /* NSData+DotzuX.h in Headers */,
 				EAF55B252055417C003E310F /* NSURLRequest+DotzuX.h in Headers */,
 				EAF55B1A2055417C003E310F /* NetworkHelper.h in Headers */,
+				EAB82FA020AC05E000BCBFE9 /* ConnectionProtocol.h in Headers */,
+				EAB82F9C20AC052700BCBFE9 /* SessionProtocol_ephemeral.h in Headers */,
+				EAB82F9D20AC052700BCBFE9 /* SessionProtocol_background.h in Headers */,
 				EA617D5220902FFC00EFDCCD /* WeakProxy.h in Headers */,
 				EAE674262064090E00282B31 /* copy_and_codesign.sh in Headers */,
 				EAF55B1B2055417C003E310F /* MLBFileInfo.h in Headers */,
@@ -2176,6 +2185,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAB82FA120AC05E800BCBFE9 /* ConnectionProtocol.m in Sources */,
+				EAB82F9E20AC054400BCBFE9 /* SessionProtocol_ephemeral.m in Sources */,
+				EAB82F9F20AC054400BCBFE9 /* SessionProtocol_background.m in Sources */,
 				EA617D4F20902FDB00EFDCCD /* FPSLabel.m in Sources */,
 				EA617D5020902FDB00EFDCCD /* WeakProxy.m in Sources */,
 				EAF55AF42055416F003E310F /* DotzuXSettings.swift in Sources */,

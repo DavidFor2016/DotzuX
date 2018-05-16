@@ -55,7 +55,6 @@
 
 - (void)dealloc {
     [_link invalidate];
-//    NSLog(@"timer release");
 }
 
 - (CGSize)sizeThatFits:(CGSize)size {
@@ -78,8 +77,6 @@
     CGFloat progress = fps / 60.0;
     UIColor *color = [UIColor colorWithHue:0.27 * (progress - 0.2) saturation:1 brightness:0.9 alpha:1];
     
-//    NSString *text1 = [NSString stringWithFormat:@"%d FPS",(int)round(fps)];
-//    NSLog(@"%@", text1);
 
     
     NSMutableAttributedString *text = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%d FPS",(int)round(fps)]];

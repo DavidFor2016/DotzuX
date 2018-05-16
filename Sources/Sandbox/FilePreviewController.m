@@ -184,22 +184,18 @@
 #pragma mark - WKNavigationDelegate
 
 - (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
-//    NSLog(@"%@", NSStringFromSelector(_cmd));
     [self.activityIndicatorView startAnimating];
 }
 
 - (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
-//    NSLog(@"%@", NSStringFromSelector(_cmd));
     [self.activityIndicatorView stopAnimating];
 }
 
 - (void)webView:(WKWebView *)webView didFinishNavigation:(WKNavigation *)navigation {
-//    NSLog(@"%@", NSStringFromSelector(_cmd));
     [self.activityIndicatorView stopAnimating];
 }
 
 - (void)webView:(WKWebView *)webView didFailProvisionalNavigation:(WKNavigation *)navigation withError:(NSError *)error {
-//    NSLog(@"%@, error = %@", NSStringFromSelector(_cmd), error);
     [self.activityIndicatorView stopAnimating];
 }
 

@@ -24,6 +24,7 @@
 //        DotzuX.tabBarControllers = @[[UIViewController new], [UIViewController new]]; //default value is `nil`
 //        DotzuX.recordCrash = YES; //default value is `NO`
 //        DotzuX.logMaxCount = 1000; //default value is `500`
+//        DotzuX.backgroundSessionConfigurationIdentifier = @"foo"; //default value is `nil`
         [DotzuX enable];
     #endif
     
